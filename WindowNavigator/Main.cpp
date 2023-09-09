@@ -101,7 +101,7 @@ void liveSearch() {
 
 		for (int i = 0; i < std::min<int>(windows.size(), 10); ++i) {
 			auto& [_, title, path] = windows[i];
-			std::cout << title << " " << path << std::endl;
+			std::cout << title << " " << path.filename() << std::endl;
 		}
 
 		std::cout << "> " << liveBuffer;
