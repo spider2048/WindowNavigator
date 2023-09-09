@@ -12,12 +12,13 @@
 namespace fs = std::filesystem;
 typedef std::tuple<HWND, std::string, fs::path> WindowInfo;
 
+
 BOOL CALLBACK _enumWindowsCallback(HWND hwnd, LPARAM lparam) {
 	int len = 1 + GetWindowTextLengthA(hwnd);
 	if (len == 1)
 		return true;
 
-	if (!IsWindowVisible(hwnd))
+	if (!IsWindowVisible(hwnd) || !IsWindowEnabled(hwnd))
 		return true;
 
 	std::string title;
@@ -35,6 +36,13 @@ BOOL CALLBACK _enumWindowsCallback(HWND hwnd, LPARAM lparam) {
 		return true;
 	}
 
+	std::string className;
+	className.resize(256);
+	GetClassNameA(hwnd, const_cast<char*>(className.c_str()), 256);
+	if (className.find("Windows.UI.Core.CoreWindow") != -1) {
+		return true;
+	}
+
 	std::string processName;
 	processName.resize(256);
 	DWORD processNameLen = 256;
@@ -47,8 +55,10 @@ BOOL CALLBACK _enumWindowsCallback(HWND hwnd, LPARAM lparam) {
 }
 
 std::vector<WindowInfo> getWindows() {
+	HDESK hDesktop = OpenDesktop(L"Default", 0, FALSE, DESKTOP_ENUMERATE);
 	std::vector<WindowInfo> windows;
-	EnumDesktopWindows(NULL, _enumWindowsCallback, (LPARAM)&windows);
+	EnumDesktopWindows(hDesktop, _enumWindowsCallback, (LPARAM)&windows);
+	CloseDesktop(hDesktop);
 	return windows;
 }
 
@@ -91,8 +101,8 @@ void liveSearch() {
 
 		for (const auto& w : windows) {
 			auto& [_, title, path] = w;
-			distances[w] = 0.3f * levenshteinDistance(liveBuffer, title) +
-				0.7f * levenshteinDistance(liveBuffer, path.filename().replace_extension().string());
+			distances[w] = 0.5f * levenshteinDistance(liveBuffer, title) +
+				0.5f * levenshteinDistance(liveBuffer, path.filename().replace_extension().string());
 			// distances[w] = levenshteinDistance(liveBuffer, title + " " + path.filename().string());
 		}
 
