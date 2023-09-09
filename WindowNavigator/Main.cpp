@@ -17,18 +17,8 @@ BOOL CALLBACK _enumWindowsCallback(HWND hwnd, LPARAM lparam) {
 	if (len == 1)
 		return true;
 
-	RECT clientRect;
-	GetClientRect(hwnd, &clientRect);
-
-	int area;
-	{
-		auto [left, top, right, bottom] = clientRect;
-		area = abs(left - right) * abs(top - bottom);
-	}
-
-	if (area < 10 || !IsWindowVisible(hwnd)) {
+	if (!IsWindowVisible(hwnd))
 		return true;
-	}
 
 	std::string title;
 	title.resize(len);
@@ -53,7 +43,6 @@ BOOL CALLBACK _enumWindowsCallback(HWND hwnd, LPARAM lparam) {
 
 	auto windows = reinterpret_cast<std::vector<WindowInfo>*>(lparam);
 	windows->emplace_back(hwnd, title, processName);
-
 	return true;
 }
 
