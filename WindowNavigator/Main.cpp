@@ -78,7 +78,7 @@ float levenshteinDistance(const std::string& word1, const std::string& word2) {
 		}
 	}
 
-	return (float)dp[m][n] / std::max<float>(m, n);
+	return (float)dp[m][n] / std::max<float>(m, n) ;
 }
 
 void liveSearch() {
@@ -91,8 +91,9 @@ void liveSearch() {
 
 		for (const auto& w : windows) {
 			auto& [_, title, path] = w;
-			distances[w] = 0.8f * levenshteinDistance(liveBuffer, title) +
-				0.2f * levenshteinDistance(liveBuffer, path.filename().string());
+			distances[w] = 0.3f * levenshteinDistance(liveBuffer, title) +
+				0.7f * levenshteinDistance(liveBuffer, path.filename().replace_extension().string());
+			// distances[w] = levenshteinDistance(liveBuffer, title + " " + path.filename().string());
 		}
 
 		std::sort(windows.begin(), windows.end(), [&](const WindowInfo& w1, const WindowInfo& w2) {
@@ -101,7 +102,7 @@ void liveSearch() {
 
 		for (int i = 0; i < std::min<int>(windows.size(), 10); ++i) {
 			auto& [_, title, path] = windows[i];
-			std::cout << title << " " << path.filename() << std::endl;
+			std::cout << title << " ~ " << path.filename().string() << " " << distances[windows[i]] << std::endl;
 		}
 
 		std::cout << "> " << liveBuffer;
@@ -115,8 +116,8 @@ void liveSearch() {
 		if (pressed == 13) {
 			HWND first = std::get<0>(windows.front());
 			LockSetForegroundWindow(LSFW_UNLOCK);
+			ShowWindow(first, SW_NORMAL);
 			SetForegroundWindow(first);
-			SetActiveWindow(first);
 			ShowWindow(GetConsoleWindow(), SW_HIDE);
 			liveBuffer.clear();
 		}
