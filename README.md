@@ -34,6 +34,17 @@ There can be many windows, but a few best windows are printed onto the console.
 
 Pressing `ENTER` will set the first window to foreground.
 
+## Building
+You need Microsoft Visual Studio.
+
+Start off by cloning the repo:
+```
+git clone --recursive https://github.com/spider2048/WindowNavigator
+```
+
+Use the `WindowNavigator.sln` file to build the project.
+
+
 ## Later
 
 Yet to implement a window with hotkey support.
