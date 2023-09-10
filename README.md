@@ -4,35 +4,33 @@ A basic command line application to navigate between windows quickly. (Windows)
 
 ## Description
 
-Press `F2` to see a console window having the first 10 windows names matching your input.
+Press `F7` to see a console window having the first 10 windows names matching your input.
 
-Works like live/fuzzy search.
+Live/Fuzzy search.
 
-Uses the [Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+Uses [Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance) between input string and the window names / app names.
 
 Case insensitive.
 
 ## Usage
-Press `F2` and start typing in the console window.
+Press `F7` and start typing in the console window.
 
 The contents would look like below:
 ```
-WhatsApp "ApplicationFrameHost.exe"
-GitHub Desktop "GitHubDesktop.exe"
-Windows Input Experience "TextInputHost.exe"
-Adobe Acrobat Reader (64-bit) "Acrobat.exe"
-pwsh "ConEmu64.exe"
-Program Manager "explorer.exe"
-WindowNavigator - Microsoft Visual Studio "devenv.exe"
-README.md - WindowNavigator - Visual Studio Code "Code.exe"
-spider2048/WindowNavigator: a faster way to switch windows - Google Chrome "chrome.exe"
-D:\Coding\Cpp\WindowNavigator\x64\Debug\WindowNavigator.exe "VsDebugConsole.exe"
-> whatsapp  --> your input
+1: PowerShell 7 ~ WindowsTerminal.exe
+2: Release ~ explorer.exe
+3: Program Manager ~ explorer.exe
+4: D:\Coding\Cpp\WindowNavigator\README.md - Notepad++ ~ notepad++.exe
+5: D:\Coding\Cpp\WindowNavigator\x64\Release\WindowNavigator.exe ~ WindowNavigator.exe
+6: WindowNavigator - Microsoft Visual Studio ~ devenv.exe
+7: ? README.md - WindowNavigator - Visual Studio Code ~ Code.exe
+8: YouTube ù Mozilla Firefox ~ firefox.exe
+> pwsh
 ```
 
 The order of the items change as you type.
 
-There can be many windows, but the best 10 windows are printed onto the console.
+There can be many windows, but a few best windows are printed onto the console.
 
 Pressing `ENTER` will set the first window to foreground.
 
@@ -40,4 +38,6 @@ Pressing `ENTER` will set the first window to foreground.
 
 Yet to implement a window with hotkey support.
 
-Currently uses `GetKeyState(...)` in a loop.
+Currently uses `GetKeyState(...)` in a loop -> So avoid using it later.
+
+Sleep cooldown is 100ms.
