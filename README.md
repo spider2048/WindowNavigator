@@ -4,7 +4,7 @@ A basic command line application to navigate between windows quickly. (Windows)
 
 ## Description
 
-Press `F7` to see a console window having the first 10 windows names matching your input.
+Press `F2` to see a console window having the first 10 windows names matching your input.
 
 Live/Fuzzy search.
 
@@ -13,7 +13,7 @@ Uses [Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance) 
 Case insensitive.
 
 ## Usage
-Press `F7` and start typing in the console window.
+Press `F2` and start typing in the console window.
 
 The contents would look like below:
 ```
@@ -44,9 +44,12 @@ git clone --recursive https://github.com/spider2048/WindowNavigator
 
 Use the `WindowNavigator.sln` file to build the project.
 
+## Fixed issues
++ Removed `SetForegroundLock(...)` so that the taskbar doeesn't freeze.
++ Minimized windows now restore
+
 
 ## Later
-
 Yet to implement a window with hotkey support.
 
 Currently uses `GetKeyState(...)` in a loop -> So avoid using it later.

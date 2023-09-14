@@ -5,11 +5,11 @@
 void handleWindowEvents() {
 	HWND currentWindow = GetConsoleWindow();
 	while (true) {
-		if (GetKeyState(VK_F7) & 0x8000) {
+		if (GetKeyState(VK_F2) & 0x8000) {
 			ShowWindow(currentWindow, SW_RESTORE);
 			while (GetForegroundWindow() != currentWindow)
 				SetForegroundWindow(currentWindow);
-			LockSetForegroundWindow(LSFW_LOCK);
+			// LockSetForegroundWindow(LSFW_LOCK);
 		}
 
 		Sleep(100);

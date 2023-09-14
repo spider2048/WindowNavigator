@@ -1,8 +1,8 @@
 #include "Window.h"
 #include <optional>
 
-BOOL CALLBACK _enumWindowsCallback(HWND hwnd, LPARAM lparam) {	
-	if (!IsWindowVisible(hwnd) || !IsWindowEnabled(hwnd))
+BOOL CALLBACK _enumWindowsCallback(HWND hwnd, LPARAM lparam) {
+	if (!IsWindowVisible(hwnd) || !IsWindowEnabled(hwnd) || hwnd == GetConsoleWindow())
 		return true;
 
 	auto title = window::getWindowText(hwnd);
@@ -10,11 +10,13 @@ BOOL CALLBACK _enumWindowsCallback(HWND hwnd, LPARAM lparam) {
 		return true;
 
 	std::string className = window::getWindowClassName(hwnd);
-	if (className.find("Windows.UI.Core.CoreWindow") != -1)
+	if (className.find("Windows.UI.Core.CoreWindow") != -1 || className.find("Progman") != -1)
+		// Opening Progman freezes taskbars
 		return true;
 
 	DWORD pid;
 	GetWindowThreadProcessId(hwnd, &pid);
+
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
 	if (hProcess == INVALID_HANDLE_VALUE)
 		return true;
@@ -32,19 +34,36 @@ namespace window {
 	}
 
 	void setActiveWindow(HWND hwnd) {
-		LockSetForegroundWindow(LSFW_UNLOCK);
+		// LockSetForegroundWindow(LSFW_UNLOCK);
 
 		WINDOWPLACEMENT wp;
+		
+		// Hide active window
+		HWND foreground = GetForegroundWindow();
+		memset(&wp, 0, sizeof(wp));
+		GetWindowPlacement(foreground, &wp);
+
+		switch (wp.showCmd) {
+		case SW_MAXIMIZE:
+		case SW_MAX:
+			ShowWindow(foreground, SW_RESTORE);
+		}
+
+		// Show new window
 		memset(&wp, 0, sizeof(wp));
 		wp.length = sizeof(wp);
 
 		GetWindowPlacement(hwnd, &wp);
 		switch (wp.showCmd) {
+		case SW_SHOWMINIMIZED:
+			ShowWindow(hwnd, SW_RESTORE);
+			break;
 		case SW_HIDE:
-		case SW_MINIMIZE:
-			ShowWindow(hwnd, SW_NORMAL);
+			ShowWindow(hwnd, SW_SHOWDEFAULT);
+			break;
 		}
 
+		SetActiveWindow(hwnd);
 		SetForegroundWindow(hwnd);
 	}
 

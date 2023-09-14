@@ -68,8 +68,8 @@ namespace search {
 				liveBuffer.pop_back();
 			else if (pressed == 13 && windows.size() > 0) {  // enter
 				HWND first = std::get<0>(windows.front());
-				window::setActiveWindow(first);
 				window::hideWindow(GetConsoleWindow());
+				window::setActiveWindow(first);
 				liveBuffer.clear();
 			} else if (isprint(pressed))
 				liveBuffer += pressed;
